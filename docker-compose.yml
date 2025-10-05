@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+    php:
+        container_name: ${APP_NAME}-php
+        build:
+            context: ./docker/php
+            dockerfile: Dockerfile
+        volumes:
+            - .:/var/www/html:rw
+        depends_on:
+            - db
+
+    nginx:
+        container_name: ${APP_NAME}-nginx
+        build:
+            context: ./docker/nginx
+            dockerfile: Dockerfile
+        environment:
+            - TZ=${TIME_ZONE}
+            - ADMINER_PORT=${ADMINER_PORT}
+            - APP_NAME=${APP_NAME}
+        volumes:
+            - ./docker/nginx/certificate:/etc/ssl/certificate:rw
+        ports:
+            - "80:80"
+            - "443:443"
+            - "${ADMINER_PORT}:${ADMINER_PORT}"
+
+    adminer:
+        container_name: ${APP_NAME}-adminer
+        image: adminer:fastcgi
+        environment:
+            - ADMINER_DEFAULT_SERVER=db
+            - TZ=${TIME_ZONE}
+        depends_on:
+            - db
+
+    db:
+        container_name: ${APP_NAME}-db
+        image: mariadb:10.7.1
+        environment:
+            - MARIADB_ROOT_PASSWORD=${DATABASE_PASSWORD}
+            - MARIADB_DATABASE=${DATABASE_NAME}
+            - TZ=${TIME_ZONE}
+        volumes:
+            - db-data:/var/lib/mysql:rw
+
+volumes:
+    db-data:
+        driver: local
