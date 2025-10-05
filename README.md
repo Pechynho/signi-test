@@ -20,3 +20,16 @@ Endpoint podporuje stránkování pomocí následujících parametrů:
 Příklad:
 
 - `https://127.0.0.1/workspace?pagination-page=1&pagination-limit=10`
+
+## Detail workspace
+
+Endpoint vrací detail workspace včetně všech kontaktů s jejich custom input hodnotami. Data jsou načítána pomocí eager loadingu, aby se předešlo N+1 problému.
+
+Endpoint podporuje volitelný parametr:
+
+- `query`: Vyhledávání v kontaktech podle firstname, lastname nebo email (částečná shoda)
+
+Příklady:
+
+- `https://127.0.0.1/workspace/1`
+- `https://127.0.0.1/workspace/1?query=test`

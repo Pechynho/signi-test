@@ -35,4 +35,28 @@ final class WorkspaceController extends AbstractController
             json: true,
         );
     }
+
+    /**
+     * @throws ExceptionInterface
+     */
+    #[Route('/{id}', name: 'app_workspace_detail', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function detail(
+        int $id,
+        Request $request,
+        WorkspaceRepository $repository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        $workspace = $repository->findForDetail($id, $request->query->get('query'));
+        if ($workspace === null) {
+            throw $this->createNotFoundException();
+        }
+        return new JsonResponse(
+            data: $serializer->serialize(
+                data: $workspace->contacts,
+                format: 'json',
+                context: [AbstractNormalizer::GROUPS => ['api:workspace:detail']],
+            ),
+            json: true,
+        );
+    }
 }

@@ -52,6 +52,8 @@ final class ContactGroup
     {
         if (!$this->contacts->contains($contact)) {
             $this->contacts->add($contact);
+        }
+        if (!$contact->groups->contains($this)) {
             $contact->addGroup($this);
         }
         return $this;
@@ -63,7 +65,9 @@ final class ContactGroup
     public function removeContact(Contact $contact): self
     {
         $this->contacts->removeElement($contact);
-        $contact->removeGroup($this);
+        if ($contact->groups->contains($this)) {
+            $contact->removeGroup($this);
+        }
         return $this;
     }
 }

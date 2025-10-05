@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute as Serializer;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 #[ORM\Table(name: 'contact')]
@@ -20,6 +21,8 @@ final class Contact
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['unsigned' => true])]
+    #[Serializer\Groups(['api:workspace:detail'])]
+    #[Serializer\SerializedName('contact_id')]
     private(set) ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Workspace::class, inversedBy: 'contacts')]
@@ -41,9 +44,11 @@ final class Contact
     public ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Serializer\Groups(['api:workspace:detail'])]
     public ?string $firstname = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Serializer\Groups(['api:workspace:detail'])]
     public ?string $lastname = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
@@ -100,6 +105,7 @@ final class Contact
 
     /** @var Collection<int, WorkspaceCustomInputValue> */
     #[ORM\OneToMany(targetEntity: WorkspaceCustomInputValue::class, mappedBy: 'contact')]
+    #[Serializer\Groups(['api:workspace:detail'])]
     public Collection $customInputValues;
 
     public function __construct()
@@ -108,6 +114,20 @@ final class Contact
         $this->groups = new ArrayCollection();
         $this->customInputValues = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+    }
+
+    #[Serializer\Groups(['api:workspace:detail'])]
+    public function getFullname(): string
+    {
+        return trim(($this->firstname ?? '') . ' ' . ($this->lastname ?? ''));
+    }
+
+    #[Serializer\Groups(['api:workspace:detail'])]
+    public function getInitials(): string
+    {
+        $first = $this->firstname !== null && $this->firstname !== '' ? mb_substr($this->firstname, 0, 1) : '';
+        $last = $this->lastname !== null && $this->lastname !== '' ? mb_substr($this->lastname, 0, 1) : '';
+        return mb_strtoupper($first . $last);
     }
 
     public function addChild(self $child): self
@@ -135,12 +155,18 @@ final class Contact
         if (!$this->groups->contains($group)) {
             $this->groups->add($group);
         }
+        if (!$group->contacts->contains($this)) {
+            $group->addContact($this);
+        }
         return $this;
     }
 
     public function removeGroup(ContactGroup $group): self
     {
         $this->groups->removeElement($group);
+        if ($group->contacts->contains($this)) {
+            $group->removeContact($this);
+        }
         return $this;
     }
 
@@ -148,6 +174,8 @@ final class Contact
     {
         if (!$this->customInputValues->contains($customInputValue)) {
             $this->customInputValues->add($customInputValue);
+        }
+        if ($customInputValue->contact !== $this) {
             $customInputValue->contact = $this;
         }
         return $this;
@@ -155,10 +183,9 @@ final class Contact
 
     public function removeCustomInputValue(WorkspaceCustomInputValue $customInputValue): self
     {
-        if ($this->customInputValues->removeElement($customInputValue)) {
-            if ($customInputValue->contact === $this) {
-                $customInputValue->contact = null;
-            }
+        $this->customInputValues->removeElement($customInputValue);
+        if ($customInputValue->contact === $this) {
+            $customInputValue->contact = null;
         }
         return $this;
     }

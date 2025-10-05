@@ -159,6 +159,7 @@ final class Workspace
 
     /** @var Collection<int, Contact> */
     #[ORM\OneToMany(targetEntity: Contact::class, mappedBy: 'workspace')]
+    #[Serializer\Groups(['api:workspace:detail'])]
     public Collection $contacts;
 
     /** @var Collection<int, ContactGroup> */
