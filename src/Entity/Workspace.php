@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute as Serializer;
 
 #[ORM\Entity(repositoryClass: WorkspaceRepository::class)]
 #[ORM\Table(name: 'workspace')]
@@ -19,6 +20,7 @@ final class Workspace
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['unsigned' => true])]
+    #[Serializer\Groups(['api:list'])]
     private(set) ?int $id = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true, options: ['unsigned' => true])]
@@ -33,15 +35,18 @@ final class Workspace
     public Collection $children;
 
     #[ORM\Column(type: Types::STRING, length: 10)]
+    #[Serializer\Groups(['api:list'])]
     public ?string $identityForm = null;
 
     #[ORM\Column(type: Types::STRING, length: 20)]
+    #[Serializer\Groups(['api:list'])]
     public ?string $title = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     public ?DateTimeImmutable $number = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Serializer\Groups(['api:list'])]
     public ?string $logo = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
@@ -102,6 +107,7 @@ final class Workspace
     public ?string $note = null;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Serializer\Groups(['api:list'])]
     public bool $isDemo = false;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
@@ -120,18 +126,22 @@ final class Workspace
     public bool $lockAfterSeal = true;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Serializer\Groups(['api:list'])]
     public ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[Serializer\Groups(['api:list'])]
     public ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Serializer\Groups(['api:list'])]
     public ?DateTimeImmutable $deletedAt = null;
 
     #[ORM\Column(type: Types::INTEGER, options: ['unsigned' => true, 'default' => 0])]
     public int $featureFlagsDelete = 0;
 
     #[ORM\Column(type: Types::STRING, length: 2, options: ['default' => 'cs'])]
+    #[Serializer\Groups(['api:list'])]
     public string $locale = 'cs';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
