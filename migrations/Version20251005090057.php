@@ -19,9 +19,6 @@ final class Version20251005090057 extends AbstractMigration
     {
         $sql = file_get_contents(__DIR__ . '/Resources/dump.sql');
         Assert::string($sql);
-//        $this->connection->executeStatement($sql);
-//        var_dump($sql);
-//        die;
         $this->addSql($sql);
     }
 
