@@ -20,6 +20,10 @@ fi
 
 TEMPLATES_DIR="/etc/nginx/sites-templates"
 AVAILABLE_DIR="/etc/nginx/sites-available"
+CONF_DIR="/etc/nginx/conf.d"
+
+# Remove default nginx config
+rm -f "$CONF_DIR/default.conf"
 
 if [ ! -d "$AVAILABLE_DIR" ]; then
   mkdir -p "$AVAILABLE_DIR"
