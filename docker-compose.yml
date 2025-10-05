@@ -10,6 +10,7 @@ services:
             - .:/var/www/html:rw
         depends_on:
             - db
+        restart: unless-stopped
 
     nginx:
         container_name: ${APP_NAME}-nginx
@@ -21,11 +22,17 @@ services:
             - ADMINER_PORT=${ADMINER_PORT}
             - APP_NAME=${APP_NAME}
         volumes:
+            - .:/var/www/html:rw
             - ./docker/nginx/certificate:/etc/ssl/certificate:rw
         ports:
             - "80:80"
             - "443:443"
             - "${ADMINER_PORT}:${ADMINER_PORT}"
+        depends_on:
+            - php
+            - db
+            - adminer
+        restart: unless-stopped
 
     adminer:
         container_name: ${APP_NAME}-adminer
@@ -35,6 +42,7 @@ services:
             - TZ=${TIME_ZONE}
         depends_on:
             - db
+        restart: unless-stopped
 
     db:
         container_name: ${APP_NAME}-db
@@ -45,6 +53,7 @@ services:
             - TZ=${TIME_ZONE}
         volumes:
             - db-data:/var/lib/mysql:rw
+        restart: unless-stopped
 
 volumes:
     db-data:
