@@ -30,4 +30,4 @@ envsubst '${APP_NAME} ${ADMINER_PORT}' < "$TEMPLATES_DIR/adminer.conf" > "$AVAIL
 
 rm -Rf /var/cache/nginx/*
 
-nginx -g "daemon off;"
+nginx

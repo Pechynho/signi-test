@@ -8,6 +8,8 @@ WORKDIR /var/www/app
 
 EXPOSE 80 443
 
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 COPY ./conf/sites-templates /etc/nginx/sites-templates
