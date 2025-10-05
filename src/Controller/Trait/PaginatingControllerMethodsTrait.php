@@ -5,6 +5,8 @@ namespace App\Controller\Trait;
 use App\Model\Pagination;
 use Symfony\Component\HttpFoundation\Request;
 
+use function dump;
+
 trait PaginatingControllerMethodsTrait
 {
     public function getPagination(
@@ -16,8 +18,8 @@ trait PaginatingControllerMethodsTrait
         int $defaultPage = 1,
     ): Pagination {
         $query = $request->query->all();
-        $page = $query[$prefix . 'page'] ?? $defaultPage;
-        $limit = $query[$prefix . 'limit'] ?? $defaultLimit;
+        $page = (int)($query[$prefix . 'page'] ?? $defaultPage);
+        $limit = (int)($query[$prefix . 'limit'] ?? $defaultLimit);
         $limit = in_array($limit, $limits, true) ? $limit : $defaultLimit;
         $page = max($page, 1);
         $page = $maxPage !== null ? min($page, $maxPage) : $page;

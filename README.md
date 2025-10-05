@@ -8,3 +8,15 @@
 
 # Adminer
 - adminer běží na adrese `https://127.0.0.1:8080` (případně `https://localhost:8080`)
+
+# API Endpoints
+## Výpis workspaces
+
+Endpoint podporuje stránkování pomocí následujících parametrů:
+
+- `pagination-page`: Číslo stránky (začíná od 1)
+- `pagination-limit`: Počet záznamů na stránku (povolené hodnoty: 10, 20, 50, 100)
+
+Příklad:
+
+- `https://127.0.0.1/workspace?pagination-page=1&pagination-limit=10`

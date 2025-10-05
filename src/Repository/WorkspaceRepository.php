@@ -23,6 +23,7 @@ final class WorkspaceRepository extends ServiceEntityRepository
     public function findForList(Pagination $pagination): array
     {
         $qb = $this->createQueryBuilder('workspace');
+        $qb->where($qb->expr()->isNull('workspace.deletedAt'));
         $qb->setFirstResult(($pagination->page - 1) * $pagination->perPage);
         $qb->setMaxResults($pagination->perPage);
         $qb->orderBy('workspace.id', 'ASC');

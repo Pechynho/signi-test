@@ -35,7 +35,6 @@ final class Workspace
     public Collection $children;
 
     #[ORM\Column(type: Types::STRING, length: 10)]
-    #[Serializer\Groups(['api:workspace:list'])]
     public ?string $identityForm = null;
 
     #[ORM\Column(type: Types::STRING, length: 20)]
@@ -134,7 +133,6 @@ final class Workspace
     public ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Serializer\Groups(['api:workspace:list'])]
     public ?DateTimeImmutable $deletedAt = null;
 
     #[ORM\Column(type: Types::INTEGER, options: ['unsigned' => true, 'default' => 0])]
