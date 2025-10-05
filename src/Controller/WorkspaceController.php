@@ -30,7 +30,7 @@ final class WorkspaceController extends AbstractController
             data: $serializer->serialize(
                 data: $repository->findForList($this->getPagination($request)),
                 format: 'json',
-                context: [AbstractNormalizer::GROUPS => ['api:list']],
+                context: [AbstractNormalizer::GROUPS => ['api:workspace:list']],
             ),
             json: true,
         );
