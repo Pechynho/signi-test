@@ -46,7 +46,7 @@ final class WorkspaceController extends AbstractController
         WorkspaceRepository $repository,
         SerializerInterface $serializer,
     ): JsonResponse {
-        $workspace = $repository->findForDetail($id, $request->query->get('query'));
+        $workspace = $repository->findForDetail($id, $request->query->getString('query'));
         if ($workspace === null) {
             throw $this->createNotFoundException();
         }
